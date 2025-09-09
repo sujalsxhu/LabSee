@@ -1,1 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>DeepSeek Chatbot - Demo</title>
+  <style>
+    body { font-family: sans-serif; max-width:720px; margin:20px auto; }
+    #chat { border:1px solid #ddd; padding:10px; height:360px; overflow:auto; background:#fafafa; }
+    .msg{ margin:8px 0; padding:6px 8px; border-radius:6px; display:inline-block; max-width:80%; }
+    .user{ background:#e6f0ff; align-self:flex-end; float:right; }
+    .bot{ background:#fff; align-self:flex-start; float:left; }
+    #controls{ display:flex; gap:8px; margin-top:10px; }
+    input[type="text"]{ flex:1; padding:8px; }
+    button{ padding:8px 12px; }
+    .clear{ clear:both; }
+  </style>
+</head>
+<body>
+  <h2>DeepSeek Chatbot (Local Demo)</h2>
+  <div id="chat"></div>
+  <div id="controls">
+    <input id="msg" type="text" placeholder="Type a message..." />
+    <button id="send">Send</button>
+  </div>
 
+  <script>
+    const chat = document.getElementById('chat');
+    const msg = document.getElementById('msg');
+    const send = document.getElementById('send');
+
+    function addMsg(role, text) {
+      const d = document.createElement('div');
+      d.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+      d.innerHTML = `<strong>${role === 'user' ? 'You' : 'Bot'}:</strong> ${text}`;
+      chat.appendChild(d);
+      const clear = document.createElement('div');
+      clear.className = 'clear';
+      chat.appendChild(clear);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMsg() {
+      const text = msg.value.trim();
+      if (!text) return;
+      addMsg('user', text);
+      msg.value = '';
+      addMsg('bot', 'typing...');
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        // remove last 'typing...' node
+        chat.removeChild(chat.lastChild.previousSibling); // remove typing message
+        if (data.reply) addMsg('bot', data.reply);
+        else addMsg('bot', 'No reply. Check server logs.');
+      } catch (err) {
+        chat.removeChild(chat.lastChild.previousSibling);
+        addMsg('bot', 'Error: ' + err.message);
+      }
+    }
+
+    send.addEventListener('click', sendMsg);
+    msg.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMsg(); });
+  </script>
+</body>
+</html>
