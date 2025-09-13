@@ -1,7 +1,7 @@
 # LabSee.AI 🚀
 
 <p align="center">
-  <img src="A_digital_vector_graphic_design_features_a_logo_fo.png" alt="LabSee.AI Logo" width="200"/>
+  <img src="https://github.com/sujalsxhu/LabSee.AI/blob/1da54479c5354c8cbf6bb9834a04c93259278164/SRC/file_00000000a63c61f8a019e27d88946038.png" alt="LabSee.AI Logo" width="200"/>
 </p>
 
 LabSee.AI is a **ChatGPT-like AI chatbot** powered by **DeepSeek API**, built using **Node.js + Express**. It allows you to run your own AI assistant locally with simple setup and REST API endpoints.
